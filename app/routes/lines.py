@@ -1,0 +1,79 @@
+from fastapi import APIRouter, status, HTTPException
+from sqlalchemy import select
+from sqlmodel import Session
+
+from app.db import get_session
+from app.schemas import Line, LineCreate, LineRead, LineUpdate
+from typing import List, Annotated
+from app.api_docs import example_create_line
+from app.services import lines
+
+router = APIRouter(prefix="/v1/lines", tags=["Управление линиями"])
+
+
+@router.post("/", status_code=status.HTTP_201_CREATED,
+             response_model=LineRead,
+             summary='Добавить линию')
+def create_line_req(line: Annotated[
+    LineCreate,
+    example_create_line,
+]):
+    """
+    Добавить линию в БД
+    """
+
+    line_obj = lines.create_line(line)
+    return line_obj
+
+
+@router.get("/", status_code=status.HTTP_200_OK, response_model=List[LineRead])
+def read_lines_list_req(limit: int = 10, offset: int = 0):
+    lines_list = lines.get_lines(limit, offset)
+
+    if not lines_list:
+        raise HTTPException(
+            status_code=status.HTTP_204_NO_CONTENT,
+            detail=f"The lines list is empty."
+        )
+    return lines_list
+
+
+@router.get("/{line_id}", response_model=LineRead)
+def read_line_by_id(line_id: int):
+    line = lines.get_line(line_id)
+
+    if not line:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Line with ID {line_id} not found"
+        )
+
+    return line
+
+
+@router.patch("/{line_id}", status_code=status.HTTP_200_OK, response_model=LineRead)
+def update_task_by_id(line_id: int, data_for_update: LineUpdate):
+    db_session: Session = get_session()
+
+    line = lines.get_line(line_id, db_session=db_session)
+
+    if not line:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Line with ID {line_id} not found"
+        )
+
+    if data_for_update.name:
+        line.name = data_for_update.name
+    if data_for_update.status:
+        line.status = data_for_update.status
+
+    db_session.commit()
+    db_session.refresh(line)
+
+    return line
+
+
+@router.delete("/{line_id}", status_code=status.HTTP_200_OK)
+def delete_task_by_id(line_id: int):
+    lines.delete_line(line_id)

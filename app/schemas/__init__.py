@@ -74,6 +74,10 @@ class LineCreate(BaseModel):
     status: StatusEnum = Field(default=StatusEnum.OFFLINE)
 
 
+class LineUpdate(LineCreate):
+    status: Optional[StatusEnum] = Field(default=None)
+
+
 class LineRead(LineCreate):
     line_id: int
 

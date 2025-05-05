@@ -52,7 +52,7 @@ def read_line_by_id(line_id: int):
 
 
 @router.patch("/{line_id}", status_code=status.HTTP_200_OK, response_model=LineRead)
-def update_task_by_id(line_id: int, data_for_update: LineUpdate):
+def update_line_by_id(line_id: int, data_for_update: LineUpdate):
     db_session: Session = get_session()
 
     line = lines.get_line(line_id, db_session=db_session)
@@ -75,5 +75,5 @@ def update_task_by_id(line_id: int, data_for_update: LineUpdate):
 
 
 @router.delete("/{line_id}", status_code=status.HTTP_200_OK)
-def delete_task_by_id(line_id: int):
+def delete_line_by_id(line_id: int):
     lines.delete_line(line_id)

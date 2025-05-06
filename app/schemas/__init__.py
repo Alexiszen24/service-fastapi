@@ -56,7 +56,7 @@ class Line(SQLModel, table=True):
 class LineLog(SQLModel, table=True):
     log_id: int = SQLField(default=None, nullable=False, primary_key=True)
     line_id: int = SQLField(default=None, nullable=False, foreign_key="line.line_id")
-    created_at: int = SQLField(nullable=False, default_factory=lambda: datetime.now())
+    created_at: datetime = SQLField(nullable=False, default_factory=lambda: datetime.now())
     status: StatusEnum = SQLField(nullable=False, default=StatusEnum.OFFLINE)
     data: dict = SQLField(sa_type=JSON)
 
@@ -65,7 +65,7 @@ class LineEvent(SQLModel, table=True):
     event_id: int = SQLField(default=None, nullable=False, primary_key=True)
     line_id: int = SQLField(default=None, nullable=False, foreign_key="line.line_id")
     log_id: int = SQLField(default=None, nullable=True, foreign_key="linelog.log_id")
-    start_at: int = SQLField(nullable=False, default_factory=lambda: datetime.now())
+    start_at: datetime = SQLField(nullable=False, default_factory=lambda: datetime.now())
     status: StatusEnum = SQLField(nullable=False, default=StatusEnum.OFFLINE)
 
 
@@ -85,3 +85,11 @@ class LineRead(LineCreate):
 class LogCreate(BaseModel):
     line_id: int
     data: dict
+
+
+class LogRead(LogCreate):
+    log_id: int
+    line_id: int
+    data: dict
+    created_at: datetime
+    status: StatusEnum

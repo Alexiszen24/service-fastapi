@@ -113,6 +113,7 @@ class EventRead(BaseModel):
     line_id: int
     start_at: datetime
     status: StatusEnum
+    description: Optional[str]
 
 
 class EventsList(BaseModel):
@@ -124,3 +125,8 @@ class EventsList(BaseModel):
 
 class EventUpdate(BaseModel):
     description: str
+
+
+class UserLogin(BaseModel):
+    username: str
+    password: str

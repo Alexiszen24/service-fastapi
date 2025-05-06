@@ -1,9 +1,7 @@
 from datetime import datetime
-from typing import Annotated, Optional, List
-from fastapi import Depends, HTTPException, status
+from typing import List
 from sqlmodel import Session, select
 
-from app.config import settings
 from app.constants import StatusEnum
 from app.schemas import LogCreate, LineLog, LogRead, LineEvent
 from .lines import get_line

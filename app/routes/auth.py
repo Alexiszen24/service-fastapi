@@ -1,3 +1,5 @@
+from typing import Annotated
+
 from fastapi import APIRouter, status, Depends, HTTPException
 from fastapi.security.oauth2 import OAuth2PasswordRequestForm
 from sqlmodel import Session, select
@@ -9,10 +11,13 @@ from app.auth import verify_password, get_password_hash, create_access_token
 from app.config import settings
 from datetime import timedelta
 
+from app.schemas import UserLogin
+
 router = APIRouter(prefix="/auth", tags=["Безопасность"])
 
 
-@router.post("/signup", status_code=status.HTTP_201_CREATED,
+@router.post("/signup",
+             status_code=status.HTTP_201_CREATED,
              response_model=int,
              summary='Добавить пользователя')
 def create_user(user: schemas.User,
@@ -36,7 +41,7 @@ def create_user(user: schemas.User,
 
 @router.post("/login", status_code=status.HTTP_200_OK,
              summary='Войти в систему')
-def user_login(login_attempt_data: OAuth2PasswordRequestForm = Depends(),
+def user_login(login_attempt_data: UserLogin,  #: Annotated[OAuth2PasswordRequestForm, Depends()],
                db_session: Session = Depends(get_session)):
     statement = (select(schemas.User)
                  .where(schemas.User.email == login_attempt_data.username))

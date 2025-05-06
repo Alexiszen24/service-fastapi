@@ -56,7 +56,7 @@ class Line(SQLModel, table=True):
 class LineLog(SQLModel, table=True):
     log_id: int = SQLField(default=None, nullable=False, primary_key=True)
     line_id: int = SQLField(default=None, nullable=False, foreign_key="line.line_id")
-    created_at: int = SQLField(default=None, nullable=False, default_factory=lambda: datetime.now())
+    created_at: int = SQLField(nullable=False, default_factory=lambda: datetime.now())
     status: StatusEnum = SQLField(nullable=False, default=StatusEnum.OFFLINE)
     data: dict = SQLField(sa_type=JSON)
 
@@ -65,7 +65,7 @@ class LineEvent(SQLModel, table=True):
     event_id: int = SQLField(default=None, nullable=False, primary_key=True)
     line_id: int = SQLField(default=None, nullable=False, foreign_key="line.line_id")
     log_id: int = SQLField(default=None, nullable=True, foreign_key="linelog.log_id")
-    start_at: int = SQLField(default=None, nullable=False, default_factory=lambda: datetime.now())
+    start_at: int = SQLField(nullable=False, default_factory=lambda: datetime.now())
     status: StatusEnum = SQLField(nullable=False, default=StatusEnum.OFFLINE)
 
 
@@ -82,14 +82,6 @@ class LineRead(LineCreate):
     line_id: int
 
 
-class Project(SQLModel, table=True):
-    project_id: int = SQLField(default=None, nullable=False, primary_key=True)
-    project_name: str
-    project_description: str | None
-
-
-class Task(SQLModel, TaskRead, table=True):
-    task_id: int = SQLField(default=None, nullable=False, primary_key=True)
-    due_date: date
-    assignee: int = SQLField(foreign_key="user.user_id")
-    project: int = SQLField(default=None, nullable=True, foreign_key="project.project_id")
+class LogCreate(BaseModel):
+    line_id: int
+    data: dict

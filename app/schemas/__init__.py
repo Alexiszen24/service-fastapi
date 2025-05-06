@@ -67,6 +67,11 @@ class LineEvent(SQLModel, table=True):
     log_id: int = SQLField(default=None, nullable=True, foreign_key="linelog.log_id")
     start_at: datetime = SQLField(nullable=False, default_factory=lambda: datetime.now())
     status: StatusEnum = SQLField(nullable=False, default=StatusEnum.OFFLINE)
+    description: Optional[str] = SQLField(default=None, nullable=True)
+
+    @property
+    def is_stop(self):
+        return self.status == StatusEnum.STOPPED
 
 
 class LineCreate(BaseModel):

@@ -80,6 +80,8 @@ service-fastapi/
 └── .gitignore           # Исключения для Git
 '''
 
+---
+
 ## 📊 Анализ качества кода (на основе Pylint)
 
 Your code has been rated at 6.52/10

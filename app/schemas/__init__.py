@@ -1,7 +1,7 @@
 from datetime import date, timedelta, datetime
 from pydantic import BaseModel, Field, BeforeValidator, EmailStr
 from pydantic_settings import SettingsConfigDict
-from typing import Optional, Annotated, TypeAlias
+from typing import Optional, Annotated, TypeAlias, List
 from sqlalchemy import UniqueConstraint
 from sqlmodel import SQLModel, Field as SQLField, JSON
 
@@ -80,6 +80,13 @@ class LineUpdate(LineCreate):
 
 class LineRead(LineCreate):
     line_id: int
+
+
+class LinesList(BaseModel):
+    items: List[LineRead]
+    offset: int
+    limit: int
+    total: int
 
 
 class LogCreate(BaseModel):

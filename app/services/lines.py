@@ -1,5 +1,6 @@
-from typing import Annotated, Optional, List
+from typing import Annotated, Optional, List, Tuple
 from fastapi import Depends, HTTPException, status
+from sqlalchemy import func
 from sqlmodel import Session, select
 
 from app.config import settings
@@ -8,7 +9,7 @@ from app.schemas import LineCreate, Line, LineRead
 
 
 def create_line(line_create: LineCreate,
-                db_session: Session = Depends(get_session)) -> Line:
+                db_session: Session = None) -> Line:
     line = Line(**line_create.model_dump())
     db_session.add(line)
     db_session.commit()
@@ -17,7 +18,7 @@ def create_line(line_create: LineCreate,
 
 
 def get_line(line_id: int,
-             db_session: Session = Depends(get_session)) -> Line:
+             db_session: Session = None) -> Line:
     query = select(Line).where(Line.line_id == line_id)
     line = db_session.exec(query).first()
     return line
@@ -25,14 +26,16 @@ def get_line(line_id: int,
 
 def get_lines(limit: Optional[int] = 10,
               offset: Optional[int] = 0,
-              db_session: Session = Depends(get_session)) -> List[Line]:
+              db_session: Session = None) -> Tuple[List[Line], int]:
+    # db_session: Session = get_session()
     query = select(Line).offset(offset).limit(limit)
     results = db_session.execute(query)
-    return results.scalars().all()
+    total = db_session.execute(select(func.count()).select_from(Line))
+    return results.scalars().all(), total.scalar()
 
 
 def delete_line(line_id: int,
-                db_session: Session = Depends(get_session)):
+                db_session: Session = None):
     query = select(Line).where(Line.line_id == line_id)
     line = db_session.exec(query).first()
     db_session.delete(line)

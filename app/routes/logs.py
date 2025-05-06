@@ -8,7 +8,7 @@ from typing import List, Annotated
 from app.api_docs import example_create_line
 from app.services import lines
 
-router = APIRouter(prefix="/v1/lines", tags=["Управление линиями"])
+router = APIRouter(prefix="/v1/logs", tags=["Добавление логов"])
 
 
 @router.post("/",

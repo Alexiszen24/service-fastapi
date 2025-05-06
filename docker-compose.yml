@@ -1,18 +1,14 @@
 services:
   web:
-    # Сборка на основе Dockerfile
     build: .
-    # Перед запуском приложения выполняются миграции БД
     command: sh -c 'alembic upgrade head && fastapi run app/main.py --port 80 --workers 4'
     volumes:
       - .:/app
     ports:
       - "80:80"
     env_file: ".env"
-    # Контейнеры приложения и СУБД будут в одной сети
     networks:
       - fastapi-network
-    # Контейнер приложения запускается после проверки работоспособности СУБД
     depends_on:
       db:
         condition: service_healthy
@@ -20,7 +16,6 @@ services:
 
   db:
     image: postgres:12.5
-    # Проверка работоспособности СУБД
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}" ]
       interval: 10s

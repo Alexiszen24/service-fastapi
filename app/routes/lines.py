@@ -35,12 +35,6 @@ def create_line_req(
 def read_lines_list_req(limit: int = 10, offset: int = 0, db_session: Session = Depends(get_session)):
     lines_list, total = lines.get_lines(limit, offset, db_session=db_session)
 
-    if not lines_list:
-        raise HTTPException(
-            status_code=status.HTTP_204_NO_CONTENT,
-            detail=f"Lines list is empty."
-        )
-
     return {
         "items": lines_list,
         "offset": offset,

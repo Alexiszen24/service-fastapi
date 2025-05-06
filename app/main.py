@@ -12,14 +12,14 @@ from app.routes import (task, task_v2, utils, async_routes, auth)
 
 app = FastAPI(
     #lifespan=lifespan,  # Uncomment if you need to create tables on app start
-    title="Система управления задачами",
-    description="Простейшая система управления задачами, основанная на "
-                "фреймворке FastAPI.",
-    version="0.0.1",
+    title="Сервис работы с простоями на производстве",
+    description="Система работы с логами о простоях на проиводственной линии, "
+                "основанная на фреймворке FastAPI.",
+    version="0.0.2",
     contact={
-        "name": "Цифровая кафедра МФТИ",
+        "name": "Зенькович Алексей Алексеевич",
         "url": "https://mipt.ru",
-        "email": "digitaldepartments@mipt.ru",
+        "email": "zenkovich.aa@phystech.edu",
     },
     license_info={
         "name": "MIT",

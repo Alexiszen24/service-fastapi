@@ -1,11 +1,8 @@
 from datetime import datetime
 from typing import Annotated, Optional, List, Tuple
-from fastapi import Depends, HTTPException, status
 from sqlalchemy import func
 from sqlmodel import Session, select
 
-from app.config import settings
-from app.db import get_session
 from app.schemas import Line, LineLog, LineEvent
 
 
@@ -24,3 +21,21 @@ def create_event(
     db_session.commit()
     db_session.refresh(event)
     return event
+
+
+def get_event(event_id: int,
+              db_session: Session = None) -> LineEvent:
+    query = select(LineEvent).where(LineEvent.event_id == event_id)
+    event = db_session.exec(query).first()
+    return event
+
+
+def get_events(line_id: int,
+               limit: Optional[int] = 10,
+               offset: Optional[int] = 0,
+               db_session: Session = None) -> Tuple[List[LineEvent], int]:
+    # db_session: Session = get_session()
+    query = select(LineEvent).where(LineEvent.line_id == line_id).offset(offset).limit(limit)
+    results = db_session.execute(query)
+    total = db_session.execute(select(func.count()).select_from(Line))
+    return results.scalars().all(), total.scalar()

@@ -105,3 +105,22 @@ class LogRead(LogCreate):
     data: dict
     created_at: datetime
     status: StatusEnum
+
+
+class EventRead(BaseModel):
+    event_id: int
+    log_id: int
+    line_id: int
+    start_at: datetime
+    status: StatusEnum
+
+
+class EventsList(BaseModel):
+    items: List[EventRead]
+    offset: int
+    limit: int
+    total: int
+
+
+class EventUpdate(BaseModel):
+    description: str

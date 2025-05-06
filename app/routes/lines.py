@@ -38,8 +38,9 @@ def read_lines_list_req(limit: int = 10, offset: int = 0, db_session: Session = 
     if not lines_list:
         raise HTTPException(
             status_code=status.HTTP_204_NO_CONTENT,
-            detail=f"The lines list is empty."
+            detail=f"Lines list is empty."
         )
+
     return {
         "items": lines_list,
         "offset": offset,
@@ -48,7 +49,7 @@ def read_lines_list_req(limit: int = 10, offset: int = 0, db_session: Session = 
     }
 
 
-@router.get("/{line_id}", response_model=LineRead)
+@router.get("/{line_id}", response_model=LineRead, summary="Информация о линии")
 def read_line_by_id(line_id: int, db_session: Session = Depends(get_session)):
     line = lines.get_line(line_id, db_session=db_session)
 
@@ -61,7 +62,12 @@ def read_line_by_id(line_id: int, db_session: Session = Depends(get_session)):
     return line
 
 
-@router.patch("/{line_id}", status_code=status.HTTP_200_OK, response_model=LineRead)
+@router.patch(
+    "/{line_id}",
+    status_code=status.HTTP_200_OK,
+    response_model=LineRead,
+    summary="Обновить линию",
+)
 def update_line_by_id(line_id: int, data_for_update: LineUpdate, db_session: Session = Depends(get_session)):
     line = lines.get_line(line_id, db_session=db_session)
 
@@ -82,6 +88,6 @@ def update_line_by_id(line_id: int, data_for_update: LineUpdate, db_session: Ses
     return line
 
 
-@router.delete("/{line_id}", status_code=status.HTTP_200_OK)
+@router.delete("/{line_id}", status_code=status.HTTP_200_OK, summary="Удалить линию")
 def delete_line_by_id(line_id: int, db_session: Session = Depends(get_session)):
     lines.delete_line(line_id, db_session=db_session)
